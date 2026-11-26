@@ -1,1 +1,609 @@
 
+<script>
+"use strict";
+
+/* =====================================
+   LINKGUARD AI - MAIN JAVASCRIPT
+   Local URL analysis - No API required
+===================================== */
+
+const $ = (id) => document.getElementById(id);
+
+const STORAGE_KEY = "linkguard_feedback_v1";
+const MAX_FEEDBACK = 50;
+
+let lastAnalyzedUrl = "";
+
+/* =====================================
+   1. URL UTILITIES
+===================================== */
+
+function normalizeUrl(value) {
+    let url = value.trim();
+
+    if (!url) {
+        throw new Error("Vui lòng nhập đường link cần kiểm tra.");
+    }
+
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+    }
+
+    let parsed;
+
+    try {
+        parsed = new URL(url);
+    } catch {
+        throw new Error("Đường link không hợp lệ. Hãy kiểm tra lại.");
+    }
+
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+        throw new Error("Chỉ hỗ trợ đường link HTTP hoặc HTTPS.");
+    }
+
+    if (!parsed.hostname) {
+        throw new Error("Không tìm thấy tên miền.");
+    }
+
+    if (parsed.username || parsed.password) {
+        throw new Error("Đường link chứa thông tin đăng nhập đáng ngờ.");
+    }
+
+    return parsed;
+}
+
+function isIPAddress(host) {
+    const ipv4 =
+        /^(?:\d{1,3}\.){3}\d{1,3}$/;
+
+    const ipv6 = /^\[[0-9a-f:]+\]$/i;
+
+    return ipv4.test(host) || ipv6.test(host);
+}
+
+function levenshtein(a, b) {
+    const dp = Array.from(
+        { length: a.length + 1 },
+        () => Array(b.length + 1).fill(0)
+    );
+
+    for (let i = 0; i <= a.length; i++) {
+        dp[i][0] = i;
+    }
+
+    for (let j = 0; j <= b.length; j++) {
+        dp[0][j] = j;
+    }
+
+    for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+            dp[i][j] = Math.min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost
+            );
+        }
+    }
+
+    return dp[a.length][b.length];
+}
+
+/* =====================================
+   2. URL ANALYSIS
+===================================== */
+
+function analyzeUrl(parsed, original) {
+    let score = 0;
+    const findings = [];
+
+    const host = parsed.hostname.toLowerCase();
+    const fullUrl = original.toLowerCase();
+
+    function addFinding(title, description, points) {
+        score += points;
+
+        findings.push({
+            title,
+            description,
+            points
+        });
+    }
+
+    // HTTPS
+    if (parsed.protocol === "http:") {
+        addFinding(
+            "Không sử dụng HTTPS",
+            "Đường link sử dụng HTTP, kết nối không được mã hóa bằng HTTPS.",
+            10
+        );
+    }
+
+    // IP address
+    if (isIPAddress(host)) {
+        addFinding(
+            "Sử dụng địa chỉ IP",
+            "Tên miền là địa chỉ IP thay vì tên miền thông thường.",
+            20
+        );
+    }
+
+    // Punycode
+    if (host.includes("xn--")) {
+        addFinding(
+            "Phát hiện Punycode",
+            "Tên miền có thể sử dụng ký tự quốc tế để giả mạo tên miền khác.",
+            25
+        );
+    }
+
+    // @ symbol
+    if (parsed.href.includes("@")) {
+        addFinding(
+            "Chứa ký tự @",
+            "Ký tự @ có thể được lợi dụng để đánh lừa người dùng về tên miền thực.",
+            20
+        );
+    }
+
+    // Too many subdomains
+    const parts = host.split(".");
+
+    if (parts.length >= 5) {
+        addFinding(
+            "Tên miền có nhiều cấp",
+            "Tên miền có nhiều thành phần phụ, cần kiểm tra kỹ.",
+            10
+        );
+    }
+
+    // Hyphens
+    if ((host.match(/-/g) || []).length >= 2) {
+        addFinding(
+            "Nhiều dấu gạch ngang",
+            "Tên miền chứa nhiều dấu gạch ngang bất thường.",
+            10
+        );
+    }
+
+    // Suspicious words
+    const suspiciousWords = [
+        "login",
+        "verify",
+        "verification",
+        "secure",
+        "account",
+        "update",
+        "password",
+        "banking",
+        "wallet",
+        "signin",
+        "gift",
+        "bonus",
+        "claim",
+        "free",
+        "support"
+    ];
+
+    const matchedWords = suspiciousWords.filter(word =>
+        fullUrl.includes(word)
+    );
+
+    if (matchedWords.length > 0) {
+        addFinding(
+            "Từ khóa cần chú ý",
+            "Phát hiện từ khóa: " + matchedWords.join(", "),
+            Math.min(20, matchedWords.length * 5)
+        );
+    }
+
+    // URL shorteners
+    const shorteners = [
+        "bit.ly",
+        "tinyurl.com",
+        "t.co",
+        "is.gd",
+        "cutt.ly",
+        "rb.gy",
+        "shorturl.at"
+    ];
+
+    if (shorteners.includes(host)) {
+        addFinding(
+            "Dịch vụ rút gọn liên kết",
+            "Không thể xác định đích đến thực sự chỉ từ đường link rút gọn.",
+            20
+        );
+    }
+
+    // Long URL
+    if (parsed.href.length > 120) {
+        addFinding(
+            "Đường link quá dài",
+            "Đường link dài bất thường, nên kiểm tra kỹ các tham số.",
+            10
+        );
+    }
+
+    // Redirect parameters
+    const redirectParams = [
+        "redirect",
+        "redirect_url",
+        "return",
+        "returnurl",
+        "url",
+        "next",
+        "continue",
+        "target"
+    ];
+
+    const hasRedirect = redirectParams.some(param =>
+        parsed.searchParams.has(param)
+    );
+
+    if (hasRedirect) {
+        addFinding(
+            "Có tham số chuyển hướng",
+            "Đường link chứa tham số có thể được sử dụng để chuyển hướng.",
+            10
+        );
+    }
+
+    // Excessive digits
+    const digitCount = (host.match(/\d/g) || []).length;
+
+    if (digitCount >= 5) {
+        addFinding(
+            "Tên miền chứa nhiều chữ số",
+            "Tên miền có nhiều chữ số, cần xác minh nguồn gốc.",
+            10
+        );
+    }
+
+    // Suspicious brand imitation
+    const trustedNames = [
+        "google",
+        "facebook",
+        "microsoft",
+        "apple",
+        "paypal",
+        "amazon",
+        "youtube",
+        "instagram",
+        "tiktok"
+    ];
+
+    for (const brand of trustedNames) {
+        if (
+            host.includes(brand) &&
+            !host.endsWith(brand + ".com") &&
+            !host.endsWith(brand + ".vn") &&
+            host !== brand + ".com" &&
+            host !== brand + ".vn"
+        ) {
+            addFinding(
+                "Tên miền có dấu hiệu giả mạo thương hiệu",
+                "Tên miền chứa tên thương hiệu nhưng không khớp với cấu trúc tên miền phổ biến của thương hiệu đó.",
+                20
+            );
+
+            break;
+        }
+    }
+
+    // No warning found
+    if (findings.length === 0) {
+        findings.push({
+            title: "Chưa phát hiện dấu hiệu đáng ngờ",
+            description: "Không tìm thấy các dấu hiệu rủi ro phổ biến trong bộ kiểm tra cục bộ.",
+            points: 0
+        });
+    }
+
+    score = Math.min(100, score);
+
+    let level;
+    let title;
+    let summary;
+
+    if (score >= 60) {
+        level = "high";
+        title = "Nguy cơ cao";
+        summary = "Đường link có nhiều dấu hiệu đáng ngờ. Không nên truy cập hoặc cung cấp thông tin cá nhân.";
+    } else if (score >= 30) {
+        level = "medium";
+        title = "Cần cảnh giác";
+        summary = "Đường link có một số dấu hiệu cần kiểm tra thêm trước khi sử dụng.";
+    } else {
+        level = "low";
+        title = "Nguy cơ thấp";
+        summary = "Chưa phát hiện nhiều dấu hiệu đáng ngờ. Tuy nhiên, kết quả không đảm bảo đường link an toàn.";
+    }
+
+    return {
+        score,
+        level,
+        title,
+        summary,
+        findings,
+        url: parsed.href,
+        host
+    };
+}
+
+/* =====================================
+   3. DISPLAY RESULTS
+===================================== */
+
+function renderResult(data) {
+    const result = $("result");
+    const scoreNumber = $("scoreNumber");
+    const riskLabel = $("riskLabel");
+    const resultHeading = $("resultHeading");
+    const resultDescription = $("resultDescription");
+    const checkedUrl = $("checkedUrl");
+    const detailList = $("detailList");
+    const scoreCircle = $("scoreCircle");
+
+    if (!result || !scoreNumber || !detailList) {
+        console.error("Không tìm thấy các thành phần kết quả trong HTML.");
+        return;
+    }
+
+    scoreNumber.textContent = data.score;
+    riskLabel.textContent = data.title;
+    resultHeading.textContent = data.title;
+    resultDescription.textContent = data.summary;
+    checkedUrl.textContent = data.url;
+
+    if (scoreCircle) {
+        scoreCircle.style.setProperty("--score", data.score + "%");
+
+        const color =
+            data.level === "high" ? "#ef4444" :
+            data.level === "medium" ? "#f59e0b" :
+            "#22c55e";
+
+        scoreCircle.style.setProperty("--score-color", color);
+    }
+
+    riskLabel.dataset.level = data.level;
+
+    detailList.replaceChildren();
+
+    data.findings.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "detail-item";
+
+        const heading = document.createElement("strong");
+        heading.textContent = item.title;
+
+        const description = document.createElement("p");
+        description.textContent = item.description;
+
+        const points = document.createElement("span");
+        points.textContent = item.points > 0
+            ? "+" + item.points + " điểm"
+            : "Không cộng điểm";
+
+        div.append(heading, description, points);
+        detailList.appendChild(div);
+    });
+
+    result.classList.add("show");
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+/* =====================================
+   4. ANALYZE BUTTON
+===================================== */
+
+function runAnalysis() {
+    const input = $("urlInput");
+    const status = $("status");
+
+    if (!input) return;
+
+    try {
+        const original = input.value.trim();
+
+        const parsed = normalizeUrl(original);
+        const data = analyzeUrl(parsed, original);
+
+        lastAnalyzedUrl = data.url;
+
+        renderResult(data);
+
+        if (status) {
+            status.textContent = "Phân tích hoàn tất.";
+        }
+
+    } catch (error) {
+        if (status) {
+            status.textContent = error.message;
+        }
+
+        $("result")?.classList.remove("show");
+    }
+}
+
+$("analyzeBtn")?.addEventListener("click", runAnalysis);
+
+$("urlInput")?.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        runAnalysis();
+    }
+});
+
+/* =====================================
+   5. EXAMPLE URL BUTTONS
+===================================== */
+
+document.querySelectorAll("[data-url]").forEach(button => {
+    button.addEventListener("click", () => {
+        const input = $("urlInput");
+
+        if (!input) return;
+
+        input.value = button.dataset.url || "";
+        input.focus();
+
+        runAnalysis();
+    });
+});
+
+/* =====================================
+   6. RESET BUTTON
+===================================== */
+
+$("resetBtn")?.addEventListener("click", () => {
+    if ($("urlInput")) {
+        $("urlInput").value = "";
+    }
+
+    $("result")?.classList.remove("show");
+
+    if ($("status")) {
+        $("status").textContent = "";
+    }
+
+    lastAnalyzedUrl = "";
+});
+
+/* =====================================
+   7. COPY RESULT
+===================================== */
+
+$("copyBtn")?.addEventListener("click", async () => {
+    const status = $("status");
+
+    if (!lastAnalyzedUrl) {
+        if (status) {
+            status.textContent = "Chưa có kết quả để sao chép.";
+        }
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(lastAnalyzedUrl);
+
+        if (status) {
+            status.textContent = "Đã sao chép đường link.";
+        }
+    } catch {
+        if (status) {
+            status.textContent = "Không thể sao chép. Hãy thử lại.";
+        }
+    }
+});
+
+/* =====================================
+   8. FEEDBACK STORAGE
+===================================== */
+
+function getFeedback() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+
+        return Array.isArray(data) ? data : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveFeedback(data) {
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data.slice(0, MAX_FEEDBACK))
+    );
+}
+
+function renderFeedback() {
+    const list = $("feedbackList");
+
+    if (!list) return;
+
+    const feedback = getFeedback();
+
+    list.replaceChildren();
+
+    if (feedback.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "Chưa có phản hồi nào.";
+        list.appendChild(empty);
+        return;
+    }
+
+    feedback.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "feedback-item";
+
+        const name = document.createElement("strong");
+        name.textContent = item.name;
+
+        const type = document.createElement("span");
+        type.textContent = " · " + item.type;
+
+        const message = document.createElement("p");
+        message.textContent = item.message;
+
+        const date = document.createElement("small");
+        date.textContent = item.date;
+
+        card.append(name, type, message, date);
+        list.appendChild(card);
+    });
+}
+
+$("feedbackForm")?.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = $("feedbackName")?.value.trim() || "Ẩn danh";
+    const type = $("feedbackType")?.value || "Khác";
+    const message = $("feedbackMessage")?.value.trim();
+    const status = $("feedbackStatus");
+
+    if (!message) {
+        if (status) {
+            status.textContent = "Vui lòng nhập nội dung phản hồi.";
+        }
+        return;
+    }
+
+    const feedback = getFeedback();
+
+    feedback.unshift({
+        name,
+        type,
+        message,
+        date: new Date().toLocaleString("vi-VN")
+    });
+
+    saveFeedback(feedback);
+
+    $("feedbackForm").reset();
+
+    renderFeedback();
+
+    if (status) {
+        status.textContent = "Cảm ơn bạn đã gửi phản hồi!";
+    }
+});
+
+/* =====================================
+   9. INITIALIZE
+===================================== */
+
+renderFeedback();
+
+console.log("LINKGUARD AI đã khởi chạy thành công.");
+</script>
+
