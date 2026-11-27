@@ -2,922 +2,1148 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b1220">
-<title>LINKGUARD AI - Cybersecurity - SẢN PHẨM KHOA HỌC KĨ THUẬT CẤP PHƯỜNG ĐỀ TÀI: CYBERGUARD — Giải pháp hỗ trợ học sinh nhậndiện các liên kết Internet đáng ngờ</title>
-<style>
-:root {
-    --bg: #0b1220;
-    --panel: #121e32;
-    --panel2: #17263d;
-    --text: #edf4ff;
-    --muted: #9aabc2;
-    --blue: #38bdf8;
-    --green: #22c55e;
-    --yellow: #f59e0b;
-    --red: #ef4444;
-    --border: rgba(148,163,184,.17);
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-}
-
-.container {
-    width: min(1050px, 92%);
-    margin: auto;
-}
-
-header {
-    border-bottom: 1px solid var(--border);
-    background: #0e192b;
-}
-
-.nav {
-    min-height: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--blue);
-    letter-spacing: 1px;
-}
-
-.nav-tag {
-    color: var(--green);
-    font-size: 12px;
-    border: 1px solid rgba(34,197,94,.4);
-    border-radius: 20px;
-    padding: 5px 12px;
-}
-
-.hero {
-    text-align: center;
-    padding: 65px 10px 35px;
-}
-
-.hero h1 {
-    font-size: clamp(30px, 5vw, 48px);
-    line-height: 1.2;
-    margin: 0 0 15px;
-}
-
-.hero h1 span {
-    color: var(--blue);
-}
-
-.hero p {
-    color: var(--muted);
-    max-width: 650px;
-    margin: auto;
-}
-
-.panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 17px;
-    padding: 25px;
-    margin-bottom: 22px;
-}
-
-.panel h2 {
-    margin-top: 0;
-    font-size: 21px;
-}
-
-.input-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-input, select, textarea {
-    width: 100%;
-    background: #0b1628;
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 13px;
-    font: inherit;
-    outline: none;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: var(--blue);
-}
-
-button {
-    border: 0;
-    border-radius: 9px;
-    padding: 12px 19px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .2s;
-}
-
-button:hover {
-    filter: brightness(1.12);
-    transform: translateY(-1px);
-}
-
-.primary {
-    background: var(--blue);
-    color: #061321;
-    white-space: nowrap;
-}
-
-.secondary {
-    background: var(--panel2);
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.status {
-    color: var(--muted);
-    font-size: 13px;
-    min-height: 22px;
-    margin-top: 10px;
-}
-
-.examples {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.example-btn {
-    background: var(--panel2);
-    color: var(--muted);
-    border: 1px solid var(--border);
-    font-size: 12px;
-    padding: 8px 11px;
-}
-
-.result {
-    display: none;
-}
-
-.result.show {
-    display: block;
-}
-
-.result-top {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    flex-wrap: wrap;
-}
-
-.score-circle {
-    width: 125px;
-    height: 125px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: conic-gradient(
-        var(--score-color, var(--green)) var(--score, 0%),
-        #26364c 0
-    );
-    flex-shrink: 0;
-    position: relative;
-}
-
-.score-inner {
-    width: 102px;
-    height: 102px;
-    border-radius: 50%;
-    background: var(--panel);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.score-inner strong {
-    font-size: 30px;
-}
-
-.score-inner small {
-    color: var(--muted);
-}
-
-.risk-label {
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    background: rgba(34,197,94,.15);
-    color: var(--green);
-}
-
-.risk-label[data-level="medium"] {
-    background: rgba(245,158,11,.15);
-    color: var(--yellow);
-}
-
-.risk-label[data-level="high"] {
-    background: rgba(239,68,68,.15);
-    color: var(--red);
-}
-
-.checked-url {
-    color: var(--blue);
-    word-break: break-all;
-    font-size: 13px;
-    margin-top: 12px;
-}
-
-.detail-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.detail-item {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-}
-
-.detail-item strong {
-    color: var(--text);
-}
-
-.detail-item p {
-    color: var(--muted);
-    margin: 5px 0;
-    font-size: 14px;
-}
-
-.detail-item span {
-    color: var(--yellow);
-    font-size: 12px;
-}
-
-.action-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-    margin-top: 20px;
-}
-
-.features {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-}
-
-.feature {
-    background: var(--panel2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 17px;
-}
-
-.feature h3 {
-    margin: 0 0 8px;
-    color: var(--blue);
-    font-size: 16px;
-}
-
-.feature p {
-    color: var(--muted);
-    font-size: 13px;
-    margin: 0;
-}
-
-.feedback-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.feedback-grid .full {
-    grid-column: 1 / -1;
-}
-
-.feedback-list {
-    display: grid;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.feedback-item {
-    background: var(--panel2);
-    border-radius: 10px;
-    padding: 13px;
-    border: 1px solid var(--border);
-}
-
-.feedback-item p {
-    color: var(--muted);
-    margin: 5px 0;
-    overflow-wrap: anywhere;
-}
-
-.feedback-item small {
-    color: var(--muted);
-}
-
-.notice {
-    border-left: 3px solid var(--yellow);
-    padding: 10px 14px;
-    background: rgba(245,158,11,.07);
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 18px;
-}
-
-footer {
-    border-top: 1px solid var(--border);
-    text-align: center;
-    color: var(--muted);
-    padding: 25px 10px;
-    margin-top: 40px;
-    font-size: 13px;
-}
-
-@media(max-width:650px) {
-    .input-row {
-        flex-direction: column;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LINKGUARD AI | Cyber Security</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101f32;
+      --panel2: #142840;
+      --blue: #27a9ff;
+      --cyan: #38e0d0;
+      --text: #edf6ff;
+      --muted: #9db0c5;
+      --border: rgba(255,255,255,.09);
+      --green: #32d69a;
+      --yellow: #ffc857;
+      --red: #ff647c;
     }
 
-    .input-row button {
-        width: 100%;
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
     }
 
-    .features {
-        grid-template-columns: 1fr;
+    button, input, textarea, select { font: inherit; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,17,31,.94);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
     }
 
-    .feedback-grid {
-        grid-template-columns: 1fr;
+    .nav {
+      max-width: 1150px;
+      margin: auto;
+      min-height: 75px;
+      padding: 12px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
     }
 
-    .feedback-grid .full {
-        grid-column: auto;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      white-space: nowrap;
     }
 
-    .result-top {
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg,var(--blue),var(--cyan));
+      display: grid;
+      place-items: center;
+      color: #061525;
+      font-size: 22px;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .nav-links button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 15px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .nav-links button:hover,
+    .nav-links button.active {
+      color: white;
+      background: rgba(39,169,255,.13);
+    }
+
+    .nav-links button.active {
+      box-shadow: inset 0 -2px var(--blue);
+    }
+
+    .local-badge {
+      color: var(--green);
+      font-size: 12px;
+      border: 1px solid rgba(50,214,154,.3);
+      padding: 7px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: auto;
+      padding: 35px 22px 70px;
+    }
+
+    .page { display: none; animation: appear .3s ease; }
+    .page.active { display: block; }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      min-height: 390px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 35px;
+      padding: 45px 0;
+    }
+
+    .hero-content { max-width: 650px; }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(36px,6vw,62px);
+      line-height: 1.12;
+      margin: 18px 0;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg,var(--blue),var(--cyan));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p, .section-intro {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .hero-art {
+      width: 280px;
+      height: 280px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(39,169,255,.3);
+      background: radial-gradient(circle,rgba(39,169,255,.18),rgba(7,17,31,.1) 65%);
+      display: grid;
+      place-items: center;
+      font-size: 110px;
+      box-shadow: 0 0 80px rgba(39,169,255,.12);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .btn-primary {
+      color: #061525;
+      background: linear-gradient(100deg,var(--blue),var(--cyan));
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+    .btn-secondary {
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin: 10px 0;
+    }
+
+    .section-heading { margin-bottom: 28px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 17px;
+      margin-top: 28px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 23px;
+    }
+
+    .feature-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(39,169,255,.13);
+      font-size: 23px;
+      margin-bottom: 17px;
+    }
+
+    .card h3 { margin: 0 0 10px; }
+    .card p { color: var(--muted); line-height: 1.65; margin-bottom: 0; }
+
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .input-label {
+      display: block;
+      margin: 18px 0 9px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .url-input, .field, textarea, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #091727;
+      color: white;
+      border-radius: 10px;
+      padding: 14px;
+      outline: none;
+    }
+
+    .url-input:focus, .field:focus, textarea:focus, select:focus {
+      border-color: var(--blue);
+    }
+
+    textarea { resize: vertical; min-height: 110px; }
+
+    .tool-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .example {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 20px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .example:hover { color: white; border-color: var(--blue); }
+
+    .result-card { min-height: 300px; }
+
+    .empty-result {
+      min-height: 250px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .result-content { display: none; }
+
+    .score-circle {
+      width: 115px;
+      height: 115px;
+      border-radius: 50%;
+      margin: 15px auto;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--green) 0deg, #20354a 0deg);
+      position: relative;
+    }
+
+    .score-circle::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      background: var(--panel);
+      border-radius: 50%;
+    }
+
+    .score-number {
+      z-index: 1;
+      font-size: 31px;
+      font-weight: bold;
+    }
+
+    .risk-label {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .result-url {
+      color: var(--muted);
+      font-size: 12px;
+      word-break: break-all;
+      margin: 13px 0;
+    }
+
+    .detail-list {
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .detail-list li.warning { color: var(--yellow); }
+    .detail-list li.safe { color: var(--green); }
+
+    .result-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .notice {
+      border: 1px solid rgba(255,200,87,.25);
+      background: rgba(255,200,87,.07);
+      color: #e9ca83;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 18px;
+    }
+
+    .review-layout {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .rating-summary {
+      text-align: center;
+      padding: 25px;
+    }
+
+    .average-score {
+      font-size: 55px;
+      font-weight: bold;
+      margin: 12px 0 3px;
+    }
+
+    .stars {
+      color: var(--yellow);
+      font-size: 27px;
+      letter-spacing: 3px;
+    }
+
+    .rating-input {
+      display: flex;
+      gap: 7px;
+      margin: 10px 0 18px;
+    }
+
+    .rating-input button {
+      border: 0;
+      background: transparent;
+      color: #52677c;
+      font-size: 34px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .rating-input button.selected { color: var(--yellow); }
+
+    .review-item {
+      border-bottom: 1px solid var(--border);
+      padding: 17px 0;
+    }
+
+    .review-item:last-child { border: 0; }
+    .review-item strong { font-size: 14px; }
+    .review-item p { color: var(--muted); line-height: 1.6; margin-bottom: 0; }
+    .review-stars { color: var(--yellow); margin: 7px 0; }
+
+    .review-list { margin-top: 15px; }
+    .empty-list { color: var(--muted); font-size: 14px; padding: 15px 0; }
+
+    .faq-list { display: grid; gap: 12px; }
+
+    .faq-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      border: 0;
+      color: white;
+      background: transparent;
+      text-align: left;
+      padding: 19px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .faq-answer {
+      display: none;
+      color: var(--muted);
+      padding: 0 19px 19px;
+      line-height: 1.75;
+    }
+
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-question { color: var(--cyan); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 27px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    footer strong { color: var(--cyan); }
+
+    .toast {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--panel2);
+      color: white;
+      border: 1px solid var(--blue);
+      padding: 13px 18px;
+      border-radius: 10px;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 8px 30px #0005;
+    }
+
+    @media(max-width:850px) {
+      .hero { min-height: auto; }
+      .hero-art { width: 190px; height: 190px; font-size: 75px; }
+      .tool-layout, .review-layout { grid-template-columns: 1fr; }
+    }
+
+    @media(max-width:650px) {
+      .nav {
+        flex-wrap: wrap;
         justify-content: center;
-        text-align: center;
+        gap: 10px;
+      }
+      .brand { width: 100%; justify-content: center; }
+      .nav-links { width: 100%; justify-content: center; flex-wrap: wrap; }
+      .nav-links button { padding: 9px 10px; font-size: 13px; }
+      .local-badge { display: none; }
+      main { padding: 22px 15px 50px; }
+      .hero { flex-direction: column; text-align: center; padding: 35px 0; }
+      .hero-art { width: 160px; height: 160px; font-size: 65px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 26px; }
     }
-
-    .result-info {
-        width: 100%;
-    }
-}
-</style>
+  </style>
 </head>
 
 <body>
-
 <header>
-    <div class="container nav">
-        <div class="logo">🛡 LINKGUARD AI - SẢN PHẨM KHOA HỌC KĨ THUẬT CẤP PHƯỜNG - ĐỀ TÀI: CYBERGUARD — Giải pháp hỗ trợ học sinh nhận diện các liên kết Internet đáng ngờ</div>
-        <div class="nav-tag">TÁC GIẢ: HỒ NGUYỄN ANH DUY - ĐỒNG HÀ PHƯƠNG - LỚP 9A2 - TRƯỜNG THCS & THPT TÂY SƠN</div>
+  <nav class="nav">
+    <div class="brand">
+      <div class="brand-icon">🛡️</div>
+      LINKGUARD <span>AI</span>
     </div>
+
+    <div class="nav-links">
+      <button class="active" data-page="home">Trang chủ</button>
+      <button data-page="tool">Công cụ</button>
+      <button data-page="reviews">Đánh giá</button>
+      <button data-page="faq">Hỏi đáp</button>
+    </div>
+
+    <div class="local-badge">● PHÂN TÍCH CỤC BỘ</div>
+  </nav>
 </header>
 
-<main class="container">
-
-    <section class="hero">
+<main>
+  <!-- TRANG CHỦ -->
+  <section class="page active" id="home">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="eyebrow">CYBER SECURITY PROJECT</div>
         <h1>Bảo vệ bạn trước <span>liên kết độc hại</span></h1>
         <p>
-            Phân tích các dấu hiệu đáng ngờ của đường link,
-            hỗ trợ nhận diện nguy cơ lừa đảo trực tuyến.
+          LINKGUARD AI hỗ trợ nhận diện những dấu hiệu đáng ngờ trong URL,
+          giúp người dùng nâng cao nhận thức và chủ động phòng tránh nguy cơ
+          lừa đảo trực tuyến.
         </p>
-    </section>
+        <button class="btn btn-primary" onclick="showPage('tool')">
+          Phân tích liên kết →
+        </button>
+      </div>
+      <div class="hero-art">🛡️</div>
+    </div>
 
-    <section class="panel">
-        <h2>🔍 Kiểm tra đường link</h2>
-        <p style="color:var(--muted);font-size:14px">
-            Nhập URL bạn muốn phân tích. Hệ thống không truy cập
-            đường link mà chỉ kiểm tra cấu trúc URL.
-        </p>
+    <div class="section-heading">
+      <div class="eyebrow">TÍNH NĂNG NỔI BẬT</div>
+      <h2 class="section-title">An toàn hơn trong môi trường số</h2>
+      <p class="section-intro">
+        Một công cụ hỗ trợ kiểm tra URL đơn giản, trực quan và dễ sử dụng.
+      </p>
+    </div>
 
-        <div class="input-row">
-            <input id="urlInput"
-                   type="text"
-                   placeholder="Ví dụ: https://example.com"
-                   autocomplete="off">
+    <div class="feature-grid">
+      <div class="card">
+        <div class="feature-icon">🔎</div>
+        <h3>Phân tích URL</h3>
+        <p>Kiểm tra cấu trúc và những dấu hiệu thường gặp trong liên kết đáng ngờ.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">📊</div>
+        <h3>Chấm điểm rủi ro</h3>
+        <p>Hiển thị điểm cảnh báo từ 0 đến 100 để người dùng dễ theo dõi.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">💡</div>
+        <h3>Nâng cao nhận thức</h3>
+        <p>Cung cấp thông tin giúp người dùng nhận biết các dấu hiệu lừa đảo trực tuyến.</p>
+      </div>
+    </div>
 
-            <button class="primary" id="analyzeBtn">
-                Phân tích URL
-            </button>
+    <div class="notice">
+      Lưu ý: LINKGUARD AI phân tích dấu hiệu URL bằng các quy tắc cục bộ.
+      Kết quả chỉ mang tính tham khảo, không thể đảm bảo một liên kết hoàn toàn an toàn.
+    </div>
+  </section>
+
+  <!-- CÔNG CỤ -->
+  <section class="page" id="tool">
+    <div class="section-heading">
+      <div class="eyebrow">URL ANALYZER</div>
+      <h2 class="section-title">Công cụ phân tích liên kết</h2>
+      <p class="section-intro">
+        Nhập địa chỉ URL để kiểm tra các dấu hiệu đáng ngờ.
+      </p>
+    </div>
+
+    <div class="tool-layout">
+      <div class="card">
+        <h3>🔍 Kiểm tra URL</h3>
+        <label class="input-label" for="urlInput">Địa chỉ liên kết cần kiểm tra</label>
+        <input
+          class="url-input"
+          id="urlInput"
+          type="text"
+          placeholder="Ví dụ: https://example.com"
+          autocomplete="off"
+        >
+
+        <div class="tool-actions">
+          <button class="btn btn-primary" id="analyzeBtn">Phân tích URL</button>
+          <button class="btn btn-secondary" id="resetBtn">Xóa</button>
         </div>
-
-        <div class="status" id="status" aria-live="polite"></div>
 
         <div class="examples">
-            <button class="example-btn" data-url="https://example.com">
-                Link mẫu thông thường
+          <button class="example" data-url="https://google.com">Ví dụ thông thường</button>
+          <button class="example" data-url="http://192.168.1.1/login">Ví dụ địa chỉ IP</button>
+          <button class="example" data-url="https://example.com@fake-login.com">Ví dụ ký tự @</button>
+        </div>
+
+        <p id="status" style="color:var(--muted);font-size:13px;margin-top:15px"></p>
+      </div>
+
+      <div class="card result-card">
+        <h3>📊 Kết quả phân tích</h3>
+
+        <div class="empty-result" id="emptyResult">
+          <div>
+            <div style="font-size:45px">🛡️</div>
+            <p>Kết quả phân tích sẽ xuất hiện tại đây<br>Hãy nhập một URL để bắt đầu.</p>
+          </div>
+        </div>
+
+        <div class="result-content" id="resultContent">
+          <div class="score-circle" id="scoreCircle">
+            <div class="score-number" id="scoreNumber">0</div>
+          </div>
+          <div class="risk-label" id="riskLabel">Chưa phân tích</div>
+          <div class="result-url" id="checkedUrl"></div>
+          <p id="resultDescription" style="color:var(--muted);font-size:14px;line-height:1.6"></p>
+          <strong style="font-size:14px">Các dấu hiệu phát hiện:</strong>
+          <ul class="detail-list" id="detailList"></ul>
+          <div class="result-buttons">
+            <button class="btn btn-secondary" id="copyBtn">Sao chép kết quả</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">
+      Hệ thống không truy cập website được kiểm tra, không tải nội dung trang web
+      và không xác minh dữ liệu từ máy chủ bên ngoài.
+    </div>
+  </section>
+
+  <!-- ĐÁNH GIÁ -->
+  <section class="page" id="reviews">
+    <div class="section-heading">
+      <div class="eyebrow">USER FEEDBACK</div>
+      <h2 class="section-title">Đánh giá LINKGUARD AI</h2>
+      <p class="section-intro">
+        Ý kiến của bạn giúp dự án tiếp tục được cải thiện.
+      </p>
+    </div>
+
+    <div class="review-layout">
+      <div>
+        <div class="card rating-summary">
+          <div style="color:var(--muted)">Điểm đánh giá trung bình</div>
+          <div class="average-score" id="averageScore">0.0</div>
+          <div class="stars" id="averageStars">☆☆☆☆☆</div>
+          <p style="color:var(--muted);font-size:13px" id="reviewCount">Chưa có đánh giá</p>
+        </div>
+
+        <div class="card" style="margin-top:17px">
+          <h3>✍️ Gửi đánh giá</h3>
+          <form id="feedbackForm">
+            <label class="input-label" for="feedbackName">Tên hiển thị</label>
+            <input class="field" id="feedbackName" maxlength="40" placeholder="Nhập tên của bạn">
+
+            <label class="input-label">Mức độ hài lòng</label>
+            <div class="rating-input" id="ratingInput" aria-label="Chọn số sao">
+              <button type="button" data-star="1" aria-label="1 sao">★</button>
+              <button type="button" data-star="2" aria-label="2 sao">★</button>
+              <button type="button" data-star="3" aria-label="3 sao">★</button>
+              <button type="button" data-star="4" aria-label="4 sao">★</button>
+              <button type="button" data-star="5" aria-label="5 sao">★</button>
+            </div>
+
+            <label class="input-label" for="feedbackMessage">Nhận xét</label>
+            <textarea id="feedbackMessage" maxlength="500" placeholder="Chia sẻ cảm nhận hoặc góp ý của bạn..."></textarea>
+
+            <button class="btn btn-primary" type="submit" style="width:100%;margin-top:15px">
+              Gửi đánh giá
             </button>
-            <button class="example-btn" data-url="http://192.168.1.1/login/verify">
-                Link IP mẫu
-            </button>
-            <button class="example-btn" data-url="http://secure-account-verify.example.com/login">
-                Link có từ khóa đáng chú ý
-            </button>
+            <p id="feedbackStatus" style="font-size:13px;color:var(--muted)"></p>
+          </form>
         </div>
-    </section>
+      </div>
 
-    <section class="panel result" id="result">
-        <h2>📊 Kết quả phân tích</h2>
-
-        <div class="result-top">
-            <div class="score-circle" id="scoreCircle">
-                <div class="score-inner">
-                    <strong id="scoreNumber">0</strong>
-                    <small>/100</small>
-                </div>
-            </div>
-
-            <div class="result-info">
-                <span class="risk-label" id="riskLabel">Đang chờ</span>
-                <h2 id="resultHeading">Kết quả</h2>
-                <p id="resultDescription" style="color:var(--muted)">
-                    Chưa có dữ liệu.
-                </p>
-                <div class="checked-url" id="checkedUrl"></div>
-            </div>
+      <div class="card">
+        <h3>💬 Đánh giá từ người dùng</h3>
+        <div class="review-list" id="reviewList">
+          <div class="empty-list">Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ!</div>
         </div>
+      </div>
+    </div>
 
-        <h3>Chi tiết dấu hiệu</h3>
-        <div class="detail-list" id="detailList"></div>
+    <div class="notice">
+      Đánh giá được lưu trên trình duyệt hiện tại bằng LocalStorage.
+      Dữ liệu không tự động đồng bộ giữa các thiết bị hoặc người dùng khác nhau.
+    </div>
+  </section>
 
-        <div class="action-row">
-            <button class="secondary" id="copyBtn">Sao chép URL</button>
-            <button class="secondary" id="resetBtn">Xóa kết quả</button>
+  <!-- HỎI ĐÁP -->
+  <section class="page" id="faq">
+    <div class="section-heading">
+      <div class="eyebrow">HELP CENTER</div>
+      <h2 class="section-title">Hỏi đáp thường gặp</h2>
+      <p class="section-intro">
+        Một số kiến thức cơ bản giúp bạn sử dụng Internet an toàn hơn.
+      </p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">1. LINKGUARD AI là gì? <span>＋</span></button>
+        <div class="faq-answer">
+          LINKGUARD AI là công cụ hỗ trợ phân tích URL nhằm phát hiện một số
+          dấu hiệu thường gặp trong liên kết đáng ngờ và cảnh báo người dùng.
         </div>
-    </section>
+      </div>
 
-    <section class="panel">
-        <h2>🧠 Các tiêu chí phân tích</h2>
-
-        <div class="features">
-            <div class="feature">
-                <h3>🌐 Địa chỉ IP</h3>
-                <p>Phát hiện URL sử dụng địa chỉ IP thay cho tên miền thông thường.</p>
-            </div>
-
-            <div class="feature">
-                <h3>🔤 Punycode</h3>
-                <p>Nhận diện tên miền có dạng mã hóa quốc tế đáng chú ý.</p>
-            </div>
-
-            <div class="feature">
-                <h3>⚠️ Từ khóa</h3>
-                <p>Kiểm tra các từ khóa thường xuất hiện trong liên kết lừa đảo.</p>
-            </div>
-
-            <div class="feature">
-                <h3>🔗 Link rút gọn</h3>
-                <p>Nhận diện một số dịch vụ rút gọn URL phổ biến.</p>
-            </div>
-
-            <div class="feature">
-                <h3>🏷 Giả mạo thương hiệu</h3>
-                <p>Phát hiện một số dấu hiệu tên miền bắt chước thương hiệu.</p>
-            </div>
-
-            <div class="feature">
-                <h3>📈 Điểm rủi ro</h3>
-                <p>Tổng hợp các dấu hiệu thành điểm đánh giá từ 0 đến 100.</p>
-            </div>
+      <div class="faq-item">
+        <button class="faq-question">2. Điểm rủi ro được tính như thế nào? <span>＋</span></button>
+        <div class="faq-answer">
+          Hệ thống cộng điểm dựa trên các dấu hiệu như URL sử dụng địa chỉ IP,
+          chứa ký tự bất thường, tên miền có dấu hiệu giả mạo hoặc sử dụng dịch vụ rút gọn.
+          Đây là mô hình quy tắc đơn giản, không phải kết luận an ninh tuyệt đối.
         </div>
+      </div>
 
-        <div class="notice">
-            Lưu ý: LINKGUARD AI là công cụ phân tích cục bộ dựa trên
-            các quy tắc nhận diện. Điểm số chỉ mang tính tham khảo,
-            không thay thế các hệ thống kiểm tra bảo mật chuyên sâu.
+      <div class="faq-item">
+        <button class="faq-question">3. URL có điểm rủi ro thấp có chắc chắn an toàn không? <span>＋</span></button>
+        <div class="faq-answer">
+          Không. Một URL độc hại có thể không chứa những dấu hiệu mà công cụ nhận diện.
+          Bạn vẫn cần kiểm tra người gửi, tên miền và nội dung trước khi truy cập.
         </div>
-    </section>
+      </div>
 
-    <section class="panel">
-        <h2>💬 Gửi phản hồi</h2>
-        <p style="color:var(--muted);font-size:14px">
-            Ý kiến của bạn giúp cải thiện hệ thống.
-        </p>
+      <div class="faq-item">
+        <button class="faq-question">4. Tôi có nên nhập mật khẩu vào liên kết lạ không? <span>＋</span></button>
+        <div class="faq-answer">
+          Không nên. Không cung cấp mật khẩu, mã OTP hoặc thông tin cá nhân
+          trên những trang web không xác minh được nguồn gốc.
+        </div>
+      </div>
 
-        <form id="feedbackForm">
-            <div class="feedback-grid">
-                <input id="feedbackName"
-                       type="text"
-                       placeholder="Tên của bạn">
+      <div class="faq-item">
+        <button class="faq-question">5. LINKGUARD AI có gửi URL lên máy chủ không? <span>＋</span></button>
+        <div class="faq-answer">
+          Phiên bản này thực hiện phân tích ngay trong trình duyệt.
+          Công cụ không gửi URL đến máy chủ bên ngoài để kiểm tra.
+        </div>
+      </div>
 
-                <select id="feedbackType">
-                    <option value="Góp ý">Góp ý</option>
-                    <option value="Báo lỗi">Báo lỗi</option>
-                    <option value="Đề xuất tính năng">Đề xuất tính năng</option>
-                    <option value="Khác">Khác</option>
-                </select>
-
-                <textarea class="full"
-                          id="feedbackMessage"
-                          rows="4"
-                          placeholder="Nhập nội dung phản hồi..."
-                          required></textarea>
-
-                <button class="primary full" type="submit">
-                    Gửi phản hồi
-                </button>
-            </div>
-        </form>
-
-        <div class="status" id="feedbackStatus" aria-live="polite"></div>
-
-        <h3>Phản hồi gần đây</h3>
-        <div class="feedback-list" id="feedbackList"></div>
-    </section>
-
+      <div class="faq-item">
+        <button class="faq-question">6. Tôi nên làm gì khi nhận được liên kết đáng ngờ? <span>＋</span></button>
+        <div class="faq-answer">
+          Không vội nhấn vào liên kết. Hãy xác minh người gửi qua kênh liên lạc
+          đáng tin cậy, không cung cấp thông tin nhạy cảm và báo cho người lớn
+          hoặc bộ phận hỗ trợ phù hợp nếu nghi ngờ bị lừa đảo.
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
-    <strong>CYBERGUARD – LINKGUARD AI - Sản phẩm KHOA HỌC KĨ THUẬT CẤP PHƯỜNG - HỒ NGUYỄN ANH DUY - ĐỒNG HÀ PHƯƠNG - LỚP 9A2 - TRƯỜNG THCS & THPT TÂY SƠN, XUÂN HƯƠNG - ĐÀ LẠT, LÂM ĐỒNG</strong>
-    <p>SẢN PHẨM KHOA HỌC KĨ THUẬT CẤP PHƯỜNG ĐỀ TÀI: CYBERGUARD — Giải pháp hỗ trợ học sinh nhận diện các liên kết Internet đáng ngờ</p>
-    <p>© 2026 LINKGUARD AI</p>
+  <strong>LINKGUARD AI</strong> — CYBER SECURITY PROJECT<br>
+  Công cụ hỗ trợ nhận diện dấu hiệu liên kết đáng ngờ<br>
+  © 2026 LINKGUARD AI. Educational project.
 </footer>
 
+<div class="toast" id="toast"></div>
+
 <script>
-"use strict";
+  // ĐIỀU HƯỚNG 4 MỤC
+  const pages = document.querySelectorAll(".page");
+  const navButtons = document.querySelectorAll(".nav-links button");
 
-const $ = id => document.getElementById(id);
+  function showPage(pageId) {
+    pages.forEach(page => {
+      page.classList.toggle("active", page.id === pageId);
+    });
 
-const STORAGE_KEY = "linkguard_feedback_v1";
-const MAX_FEEDBACK = 50;
+    navButtons.forEach(button => {
+      button.classList.toggle("active", button.dataset.page === pageId);
+    });
 
-let lastAnalyzedUrl = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-function normalizeUrl(value) {
-    let url = value.trim();
+  navButtons.forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.page));
+  });
 
-    if (!url) {
-        throw new Error("Vui lòng nhập đường link cần kiểm tra.");
+  // THÔNG BÁO
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => {
+      toast.style.display = "none";
+    }, 2500);
+  }
+
+  // PHÂN TÍCH URL
+  const urlInput = document.getElementById("urlInput");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const statusText = document.getElementById("status");
+
+  let lastResultText = "";
+
+  function analyzeURL() {
+    const raw = urlInput.value.trim();
+
+    if (!raw) {
+      statusText.textContent = "Vui lòng nhập URL cần phân tích.";
+      urlInput.focus();
+      return;
     }
 
-    if (!/^https?:\/\//i.test(url)) {
-        url = "https://" + url;
-    }
-
-    let parsed;
+    let url;
 
     try {
-        parsed = new URL(url);
-    } catch {
-        throw new Error("Đường link không hợp lệ.");
+      url = new URL(/^https?:\/\//i.test(raw) ? raw : "https://" + raw);
+    } catch (error) {
+      statusText.textContent = "URL không hợp lệ. Hãy kiểm tra lại địa chỉ.";
+      return;
     }
 
-    if (!["http:", "https:"].includes(parsed.protocol)) {
-        throw new Error("Chỉ hỗ trợ HTTP và HTTPS.");
+    if (!["http:", "https:"].includes(url.protocol)) {
+      statusText.textContent = "Chỉ hỗ trợ URL HTTP hoặc HTTPS.";
+      return;
     }
 
-    if (!parsed.hostname || parsed.username || parsed.password) {
-        throw new Error("Đường link không hợp lệ hoặc chứa thông tin đăng nhập.");
-    }
-
-    return parsed;
-}
-
-function isIPAddress(host) {
-    return /^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) ||
-           /^\[[0-9a-f:]+\]$/i.test(host);
-}
-
-function analyzeUrl(parsed, original) {
     let score = 0;
     const findings = [];
 
-    const host = parsed.hostname.toLowerCase();
-    const fullUrl = original.toLowerCase();
-
-    function add(title, description, points) {
-        score += points;
-        findings.push({title, description, points});
+    function addRisk(points, message) {
+      score += points;
+      findings.push({ message, warning: true });
     }
 
-    if (parsed.protocol === "http:") {
-        add("Không sử dụng HTTPS",
-            "Đường link sử dụng HTTP thay vì HTTPS.", 10);
-    }
+    const hostname = url.hostname.toLowerCase();
+    const fullURL = raw.toLowerCase();
 
-    if (isIPAddress(host)) {
-        add("Sử dụng địa chỉ IP",
-            "Đường link sử dụng địa chỉ IP trực tiếp.", 20);
-    }
-
-    if (host.includes("xn--")) {
-        add("Phát hiện Punycode",
-            "Tên miền có dạng mã hóa Punycode.", 25);
-    }
-
-    if (parsed.href.includes("@")) {
-        add("Chứa ký tự @",
-            "Ký tự @ có thể được lợi dụng để đánh lừa người dùng.", 20);
-    }
-
-    if (host.split(".").length >= 5) {
-        add("Nhiều cấp tên miền",
-            "Tên miền có nhiều thành phần phụ.", 10);
-    }
-
-    if ((host.match(/-/g) || []).length >= 2) {
-        add("Nhiều dấu gạch ngang",
-            "Tên miền có nhiều dấu gạch ngang.", 10);
-    }
-
-    const keywords = [
-        "login", "verify", "verification", "secure",
-        "account", "update", "password", "banking",
-        "wallet", "signin", "gift", "bonus",
-        "claim", "free", "support"
-    ];
-
-    const matched = keywords.filter(word => fullUrl.includes(word));
-
-    if (matched.length) {
-        add("Từ khóa cần chú ý",
-            "Phát hiện: " + matched.join(", "),
-            Math.min(20, matched.length * 5));
-    }
-
-    const shorteners = [
-        "bit.ly", "tinyurl.com", "t.co",
-        "is.gd", "cutt.ly", "rb.gy", "shorturl.at"
-    ];
-
-    if (shorteners.includes(host)) {
-        add("Liên kết rút gọn",
-            "Không thể xác định đích đến chỉ từ URL rút gọn.", 20);
-    }
-
-    if (parsed.href.length > 120) {
-        add("URL quá dài",
-            "Đường link có độ dài bất thường.", 10);
-    }
-
-    const redirectParams = [
-        "redirect", "redirect_url", "return",
-        "returnurl", "url", "next", "continue", "target"
-    ];
-
-    if (redirectParams.some(param => parsed.searchParams.has(param))) {
-        add("Có tham số chuyển hướng",
-            "URL chứa tham số có thể được dùng để chuyển hướng.", 10);
-    }
-
-    if ((host.match(/\d/g) || []).length >= 5) {
-        add("Nhiều chữ số trong tên miền",
-            "Tên miền có nhiều chữ số.", 10);
-    }
-
-    const brands = [
-        "google", "facebook", "microsoft", "apple",
-        "paypal", "amazon", "youtube", "instagram", "tiktok"
-    ];
-
-    for (const brand of brands) {
-        if (
-            host.includes(brand) &&
-            host !== brand + ".com" &&
-            host !== brand + ".vn" &&
-            !host.endsWith("." + brand + ".com") &&
-            !host.endsWith("." + brand + ".vn")
-        ) {
-            add("Có dấu hiệu giả mạo thương hiệu",
-                "Tên miền chứa tên thương hiệu nhưng cần xác minh nguồn gốc.", 20);
-            break;
-        }
-    }
-
-    if (!findings.length) {
-        findings.push({
-            title: "Chưa phát hiện dấu hiệu đáng ngờ",
-            description: "Không tìm thấy dấu hiệu rủi ro phổ biến.",
-            points: 0
-        });
-    }
-
-    score = Math.min(100, score);
-
-    let level, title, summary;
-
-    if (score >= 60) {
-        level = "high";
-        title = "Nguy cơ cao";
-        summary = "Đường link có nhiều dấu hiệu đáng ngờ. Không nên truy cập hoặc cung cấp thông tin cá nhân.";
-    } else if (score >= 30) {
-        level = "medium";
-        title = "Cần cảnh giác";
-        summary = "Đường link có một số dấu hiệu cần kiểm tra thêm.";
+    // Kiểm tra giao thức
+    if (url.protocol === "http:") {
+      addRisk(15, "Sử dụng HTTP thay vì HTTPS.");
     } else {
-        level = "low";
-        title = "Nguy cơ thấp";
-        summary = "Chưa phát hiện nhiều dấu hiệu đáng ngờ. Điều này không đảm bảo URL an toàn.";
+      findings.push({ message: "Sử dụng giao thức HTTPS.", warning: false });
     }
 
-    return {
-        score, level, title, summary, findings,
-        url: parsed.href
-    };
-}
-
-function renderResult(data) {
-    $("scoreNumber").textContent = data.score;
-    $("riskLabel").textContent = data.title;
-    $("riskLabel").dataset.level = data.level;
-    $("resultHeading").textContent = data.title;
-    $("resultDescription").textContent = data.summary;
-    $("checkedUrl").textContent = data.url;
-
-    const circle = $("scoreCircle");
-
-    const color = data.level === "high" ? "#ef4444" :
-                  data.level === "medium" ? "#f59e0b" :
-                  "#22c55e";
-
-    circle.style.setProperty("--score", data.score + "%");
-    circle.style.setProperty("--score-color", color);
-
-    const list = $("detailList");
-    list.replaceChildren();
-
-    data.findings.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "detail-item";
-
-        const title = document.createElement("strong");
-        title.textContent = item.title;
-
-        const description = document.createElement("p");
-        description.textContent = item.description;
-
-        const points = document.createElement("span");
-        points.textContent = item.points > 0
-            ? "+" + item.points + " điểm"
-            : "Không cộng điểm";
-
-        div.append(title, description, points);
-        list.appendChild(div);
-    });
-
-    $("result").classList.add("show");
-    $("result").scrollIntoView({behavior:"smooth", block:"nearest"});
-}
-
-function runAnalysis() {
-    try {
-        const original = $("urlInput").value.trim();
-        const parsed = normalizeUrl(original);
-        const data = analyzeUrl(parsed, original);
-
-        lastAnalyzedUrl = data.url;
-        renderResult(data);
-
-        $("status").textContent = "Phân tích hoàn tất.";
-    } catch (error) {
-        $("status").textContent = error.message;
-        $("result").classList.remove("show");
-    }
-}
-
-$("analyzeBtn").addEventListener("click", runAnalysis);
-
-$("urlInput").addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        runAnalysis();
-    }
-});
-
-document.querySelectorAll("[data-url]").forEach(button => {
-    button.addEventListener("click", () => {
-        $("urlInput").value = button.dataset.url;
-        runAnalysis();
-    });
-});
-
-$("resetBtn").addEventListener("click", () => {
-    $("urlInput").value = "";
-    $("result").classList.remove("show");
-    $("status").textContent = "";
-    lastAnalyzedUrl = "";
-});
-
-$("copyBtn").addEventListener("click", async () => {
-    if (!lastAnalyzedUrl) {
-        $("status").textContent = "Chưa có URL để sao chép.";
-        return;
+    // Kiểm tra địa chỉ IP
+    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (ipPattern.test(hostname) || hostname.includes(":")) {
+      addRisk(25, "Tên máy chủ có dạng địa chỉ IP.");
     }
 
-    try {
-        await navigator.clipboard.writeText(lastAnalyzedUrl);
-        $("status").textContent = "Đã sao chép URL.";
-    } catch {
-        $("status").textContent = "Không thể sao chép URL.";
+    // Kiểm tra ký tự @
+    if (raw.includes("@")) {
+      addRisk(25, "URL chứa ký tự @ có thể gây nhầm lẫn về tên máy chủ.");
     }
-});
 
-function getFeedback() {
-    try {
-        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        return Array.isArray(data) ? data : [];
-    } catch {
-        return [];
+    // Kiểm tra Punycode
+    if (hostname.includes("xn--")) {
+      addRisk(25, "Tên miền chứa Punycode, cần kiểm tra kỹ ký tự.");
     }
-}
 
-function saveFeedback(data) {
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data.slice(0, MAX_FEEDBACK))
+    // Kiểm tra tên miền quá dài
+    if (hostname.length > 35) {
+      addRisk(10, "Tên miền có độ dài bất thường.");
+    }
+
+    // Kiểm tra nhiều dấu gạch nối
+    const hyphens = (hostname.match(/-/g) || []).length;
+    if (hyphens >= 3) {
+      addRisk(10, "Tên miền chứa nhiều dấu gạch nối.");
+    }
+
+    // Từ khóa thường gặp trong liên kết giả mạo
+    const suspiciousWords = [
+      "login", "verify", "account", "secure", "update",
+      "password", "banking", "gift", "free", "bonus",
+      "signin", "wallet", "confirm", "support"
+    ];
+
+    const matchedWords = suspiciousWords.filter(word =>
+      hostname.includes(word) || url.pathname.toLowerCase().includes(word)
     );
-}
 
-function renderFeedback() {
-    const list = $("feedbackList");
-    list.replaceChildren();
-
-    const feedback = getFeedback();
-
-    if (!feedback.length) {
-        const empty = document.createElement("p");
-        empty.textContent = "Chưa có phản hồi nào.";
-        empty.style.color = "var(--muted)";
-        list.appendChild(empty);
-        return;
+    if (matchedWords.length > 0) {
+      addRisk(Math.min(matchedWords.length * 8, 20),
+        "Xuất hiện từ khóa nhạy cảm: " + matchedWords.join(", ") + ".");
     }
 
-    feedback.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "feedback-item";
+    // Kiểm tra dịch vụ rút gọn
+    const shorteners = [
+      "bit.ly", "tinyurl.com", "t.co", "is.gd",
+      "cutt.ly", "shorturl.at", "rb.gy"
+    ];
 
-        const name = document.createElement("strong");
-        name.textContent = item.name;
+    if (shorteners.some(domain =>
+      hostname === domain || hostname.endsWith("." + domain)
+    )) {
+      addRisk(20, "Sử dụng dịch vụ rút gọn URL, khó nhận biết đích đến.");
+    }
 
-        const type = document.createElement("span");
-        type.textContent = " · " + item.type;
+    // Kiểm tra tên miền có nhiều cấp
+    const labels = hostname.split(".");
+    if (labels.length >= 5) {
+      addRisk(10, "Tên miền có nhiều cấp phụ.");
+    }
 
-        const message = document.createElement("p");
-        message.textContent = item.message;
+    // Kiểm tra ký tự đặc biệt trong URL
+    if (fullURL.includes("%40") || fullURL.includes("%2f%2f")) {
+      addRisk(10, "URL chứa chuỗi mã hóa có thể gây khó đọc.");
+    }
 
-        const date = document.createElement("small");
-        date.textContent = item.date;
+    score = Math.min(score, 100);
 
-        card.append(name, type, message, date);
-        list.appendChild(card);
+    let risk, color, description;
+
+    if (score < 30) {
+      risk = "Rủi ro thấp";
+      color = "#32d69a";
+      description = "Chưa phát hiện nhiều dấu hiệu đáng ngờ theo bộ quy tắc hiện tại.";
+    } else if (score < 60) {
+      risk = "Rủi ro trung bình";
+      color = "#ffc857";
+      description = "URL có một số dấu hiệu cần chú ý. Hãy kiểm tra kỹ trước khi truy cập.";
+    } else {
+      risk = "Rủi ro cao";
+      color = "#ff647c";
+      description = "Phát hiện nhiều dấu hiệu đáng ngờ. Không nên truy cập hoặc cung cấp thông tin cá nhân.";
+    }
+
+    document.getElementById("emptyResult").style.display = "none";
+    document.getElementById("resultContent").style.display = "block";
+
+    const circle = document.getElementById("scoreCircle");
+    circle.style.background =
+      `conic-gradient(${color} ${score * 3.6}deg, #20354a ${score * 3.6}deg)`;
+
+    document.getElementById("scoreNumber").textContent = score;
+    document.getElementById("riskLabel").textContent = risk;
+    document.getElementById("riskLabel").style.color = color;
+    document.getElementById("checkedUrl").textContent = url.href;
+    document.getElementById("resultDescription").textContent = description;
+
+    const detailList = document.getElementById("detailList");
+    detailList.innerHTML = "";
+
+    if (findings.length === 0) {
+      findings.push({
+        message: "Không phát hiện dấu hiệu đáng ngờ theo các quy tắc cơ bản.",
+        warning: false
+      });
+    }
+
+    findings.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item.message;
+      li.className = item.warning ? "warning" : "safe";
+      detailList.appendChild(li);
     });
-}
 
-$("feedbackForm").addEventListener("submit", event => {
+    lastResultText =
+      "LINKGUARD AI - KẾT QUẢ PHÂN TÍCH\n" +
+      "URL: " + url.href + "\n" +
+      "Điểm rủi ro: " + score + "/100\n" +
+      "Mức cảnh báo: " + risk + "\n" +
+      "Chi tiết:\n" + findings.map(x => "- " + x.message).join("\n") +
+      "\nLưu ý: Kết quả chỉ mang tính tham khảo.";
+
+    statusText.textContent = "Phân tích hoàn tất.";
+  }
+
+  analyzeBtn.addEventListener("click", analyzeURL);
+
+  urlInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") analyzeURL();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    urlInput.value = "";
+    statusText.textContent = "";
+    document.getElementById("resultContent").style.display = "none";
+    document.getElementById("emptyResult").style.display = "grid";
+    lastResultText = "";
+  });
+
+  document.querySelectorAll(".example").forEach(button => {
+    button.addEventListener("click", () => {
+      urlInput.value = button.dataset.url;
+      analyzeURL();
+    });
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    if (!lastResultText) return;
+
+    try {
+      await navigator.clipboard.writeText(lastResultText);
+      showToast("Đã sao chép kết quả!");
+    } catch (error) {
+      showToast("Không thể sao chép tự động trên trình duyệt này.");
+    }
+  });
+
+  // ĐÁNH GIÁ VÀ CHẤM SAO
+  const STORAGE_KEY = "linkguard_reviews_v1";
+  let selectedRating = 0;
+  let reviews = loadReviews();
+
+  function loadReviews() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveReviews() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  const ratingButtons = document.querySelectorAll("#ratingInput button");
+
+  function updateStarInput() {
+    ratingButtons.forEach(button => {
+      const value = Number(button.dataset.star);
+      button.classList.toggle("selected", value <= selectedRating);
+    });
+  }
+
+  ratingButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      selectedRating = Number(button.dataset.star);
+      updateStarInput();
+    });
+  });
+
+  document.getElementById("feedbackForm").addEventListener("submit", event => {
     event.preventDefault();
 
-    const message = $("feedbackMessage").value.trim();
+    const name = document.getElementById("feedbackName").value.trim() || "Người dùng";
+    const message = document.getElementById("feedbackMessage").value.trim();
+    const feedbackStatus = document.getElementById("feedbackStatus");
+
+    if (selectedRating < 1 || selectedRating > 5) {
+      feedbackStatus.textContent = "Vui lòng chọn số sao đánh giá.";
+      return;
+    }
 
     if (!message) {
-        $("feedbackStatus").textContent = "Vui lòng nhập nội dung phản hồi.";
-        return;
+      feedbackStatus.textContent = "Vui lòng nhập nội dung nhận xét.";
+      return;
     }
 
-    const feedback = getFeedback();
-
-    feedback.unshift({
-        name: $("feedbackName").value.trim() || "Ẩn danh",
-        type: $("feedbackType").value,
-        message,
-        date: new Date().toLocaleString("vi-VN")
+    reviews.unshift({
+      name: name.slice(0, 40),
+      rating: selectedRating,
+      message: message.slice(0, 500),
+      date: new Date().toLocaleDateString("vi-VN")
     });
 
-    try {
-        saveFeedback(feedback);
-        $("feedbackForm").reset();
-        renderFeedback();
-        $("feedbackStatus").textContent = "Cảm ơn bạn đã gửi phản hồi!";
-    } catch {
-        $("feedbackStatus").textContent = "Không thể lưu phản hồi trên trình duyệt.";
+    if (reviews.length > 100) reviews = reviews.slice(0, 100);
+
+    if (!saveReviews()) {
+      reviews.shift();
+      feedbackStatus.textContent = "Không thể lưu đánh giá trên trình duyệt.";
+      return;
     }
-});
 
-renderFeedback();
+    selectedRating = 0;
+    updateStarInput();
+    document.getElementById("feedbackForm").reset();
+    feedbackStatus.textContent = "Cảm ơn bạn đã gửi đánh giá!";
+    renderReviews();
+  });
 
-console.log("LINKGUARD AI đã khởi chạy thành công.");
+  function renderReviews() {
+    const list = document.getElementById("reviewList");
+    const count = reviews.length;
+
+    if (count === 0) {
+      list.innerHTML = '<div class="empty-list">Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ!</div>';
+      document.getElementById("averageScore").textContent = "0.0";
+      document.getElementById("averageStars").textContent = "☆☆☆☆☆";
+      document.getElementById("reviewCount").textContent = "Chưa có đánh giá";
+      return;
+    }
+
+    const average = reviews.reduce((sum, item) => sum + item.rating, 0) / count;
+
+    document.getElementById("averageScore").textContent = average.toFixed(1);
+    document.getElementById("averageStars").textContent =
+      "★".repeat(Math.round(average)) + "☆".repeat(5 - Math.round(average));
+    document.getElementById("reviewCount").textContent = count + " đánh giá";
+
+    list.innerHTML = "";
+
+    reviews.forEach(review => {
+      const item = document.createElement("div");
+      item.className = "review-item";
+
+      const name = document.createElement("strong");
+      name.textContent = review.name;
+
+      const date = document.createElement("span");
+      date.textContent = " · " + review.date;
+      date.style.color = "var(--muted)";
+      date.style.fontSize = "12px";
+
+      const stars = document.createElement("div");
+      stars.className = "review-stars";
+      stars.textContent = "★".repeat(review.rating) + "☆".repeat(5 - review.rating);
+
+      const message = document.createElement("p");
+      message.textContent = review.message;
+
+      item.append(name, date, stars, message);
+      list.appendChild(item);
+    });
+  }
+
+  renderReviews();
+
+  // HỎI ĐÁP
+  document.querySelectorAll(".faq-question").forEach(button => {
+    button.addEventListener("click", () => {
+      const item = button.parentElement;
+      item.classList.toggle("open");
+      button.querySelector("span").textContent =
+        item.classList.contains("open") ? "−" : "＋";
+    });
+  });
 </script>
-
 </body>
 </html>
